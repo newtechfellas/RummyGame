@@ -101,9 +101,11 @@ grails {
             securityConfigType = 'InterceptUrlMap'
             interceptUrlMap = [
                     '/login/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                    '/logout/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                    '/console/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                    '/account/**': ['IS_AUTHENTICATED_FULLY'],
+                    '/RummyGame/logout/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                    '/RummyGame/console/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                    '/dbconsole/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                    '/RummyGame/dbconsole/**': ['IS_AUTHENTICATED_FULLY'],
+                    '/RummyGame/account/**': ['IS_AUTHENTICATED_FULLY'],
                     '/': ['IS_AUTHENTICATED_FULLY'],
                     '/*': ['IS_AUTHENTICATED_ANONYMOUSLY']
             ]

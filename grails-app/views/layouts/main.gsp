@@ -53,7 +53,7 @@
         function autologin(){
             if( !$('#signinButton').size() ){
                 gapi.auth.authorize({
-                    client_id: '541774029905.apps.googleusercontent.com',
+                    client_id: '769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com',
                     scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
                     immediate: true,
                     response_type: "code token"
