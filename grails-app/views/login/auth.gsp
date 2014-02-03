@@ -158,8 +158,16 @@
 </div>
 
 
-
-
+<p>
+    You can also choose to register with us and logon which is quite boring... after all who wants to register to websites these days when we already have oAuth support from website gaints.
+    If you wish to continue, please <a id="register" href="#">Register</a> here.
+</p>
+<script>
+    $('#register').click( function(event) {
+        alert('Oh my gosh... you are one tough player. This is version 0.1 app. Register and login will be implemented in version 2.0.');
+        event.preventDefault();
+    });
+</script>
 
 </body>
 </html>

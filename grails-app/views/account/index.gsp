@@ -68,14 +68,11 @@
                             <td>Username</td>
                             <td>${user.username}</td>
                         </tr>
-                        <tr>
-                            <td>Favorite Color</td>
-                            <td>${user.favoriteColor ?: ''}</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <g:if test="${session.authProvider == 'Google'}">
         <div class="col-md-6">
             <div class="well">
                 <h4>Google+ User Profile</h4>
@@ -94,6 +91,7 @@
                 </table>
             </div>
         </div>
+        </g:if>
     </div>
 
     <script>
