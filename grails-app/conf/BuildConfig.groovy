@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.2.1"
 
         compile ":spring-security-core:1.2.7.3"
+        compile ":spring-security-facebook:0.15.2"
 
         compile ":console:1.2"
 

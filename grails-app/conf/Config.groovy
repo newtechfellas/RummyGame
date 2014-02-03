@@ -95,6 +95,7 @@ grails.plugins.springsecurity.userLookup.userDomainClassName = 'app.SecUser'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'app.SecUserRole'
 grails.plugins.springsecurity.authority.className = 'app.SecRole'
 
+
 grails {
     plugins {
         springsecurity {
@@ -115,6 +116,10 @@ grails {
         }
     }
 }
+
+grails.plugins.springsecurity.facebook.domain.classname='app.FacebookUser'
+grails.plugins.springsecurity.facebook.appId='607277269325617'
+grails.plugins.springsecurity.facebook.secret=System.getenv('RUMMY_GAME_FACEBOOK_SECRET')
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 

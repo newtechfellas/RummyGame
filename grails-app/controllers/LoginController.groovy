@@ -27,7 +27,7 @@ class LoginController {
     private static final HttpTransport TRANSPORT = new NetHttpTransport()
     private static final JsonFactory JSON_FACTORY = new JacksonFactory()
     private static final String CLIENT_ID = '769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com'
-    private static final String CLIENT_SECRET = System.getenv('RUMMY_GAME_CLIENT_SECRET')
+    private static final String CLIENT_SECRET = System.getenv('RUMMY_GAME_GOOGLE_SECRET')
 
 	/**
 	 * Dependency injection for the authenticationTrustResolver.

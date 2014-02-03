@@ -63,6 +63,13 @@
     </span>
 </div>
 
+<sec:ifNotGranted roles="ROLE_USER">
+    <facebookAuth:connect />
+</sec:ifNotGranted>
+<sec:ifAllGranted roles="ROLE_USER">
+    Welcome <sec:username/>! (<g:link uri="/j_spring_security_logout">Logout</g:link>)
+</sec:ifAllGranted>
+
 <script>
     //hack to prevent toast message from reappearing
     window.___gcfg = { isSignedOut: true };

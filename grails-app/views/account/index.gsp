@@ -108,8 +108,6 @@
                     console.log(obj);
 
                     if( obj.email != "${user.username}" ){
-                        alert('obj.email is '+obj.email)
-                        alert('user.username is'+"${user.username}")
                         location.href = '/RummyGame/logout';
                         return;
                     }
