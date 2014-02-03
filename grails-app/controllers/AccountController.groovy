@@ -6,7 +6,7 @@ class AccountController {
     SpringSecurityService springSecurityService
 
     def index = {
-        [user: springSecurityService.currentUser]
+        [user: springSecurityService.currentUser ]
     }
 
 }

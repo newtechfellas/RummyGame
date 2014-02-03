@@ -110,6 +110,7 @@ class LoginController {
                 redirectUri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
         ]
 
+        session.authProvider = 'Google'
         render(jsonResponse as JSON)
 
     }

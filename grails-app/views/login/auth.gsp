@@ -51,28 +51,27 @@
 
 <body>
 
-
-<div id="signinButton">
-    <span
-            class="g-signin"
-            data-callback="signinCallback"
-            data-clientid="769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com"
-            data-cookiepolicy="single_host_origin"
-            data-requestvisibleactions="http://schemas.google.com/AddActivity"
-            data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
-    </span>
-</div>
-
-<sec:ifNotGranted roles="ROLE_USER">
-    <facebookAuth:connect />
-</sec:ifNotGranted>
-<sec:ifAllGranted roles="ROLE_USER">
-    Welcome <sec:username/>! (<g:link uri="/j_spring_security_logout">Logout</g:link>)
-</sec:ifAllGranted>
-
 <script>
     //hack to prevent toast message from reappearing
     window.___gcfg = { isSignedOut: true };
+
+    function autologin(){
+        if( !$('#signinButton').size() ){
+            gapi.auth.authorize({
+                client_id: '769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com',
+                scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
+                immediate: true,
+                response_type: "code token"
+            }, signinCallback );
+        }
+    }
+    (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js?onload=autologin';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+
+
 
     function signinCallback(authResult) {
 
@@ -137,6 +136,30 @@
         });
     }
 </script>
+
+<br/>
+<sec:ifNotGranted roles="ROLE_USER">
+    <facebookAuth:connect />
+</sec:ifNotGranted>
+<sec:ifAllGranted roles="ROLE_USER">
+    Welcome <sec:username/>! (<g:link uri="/j_spring_security_logout">Logout</g:link>)
+</sec:ifAllGranted>
+
+
+<div id="signinButton">
+    <span
+            class="g-signin"
+            data-callback="signinCallback"
+            data-clientid="769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com"
+            data-cookiepolicy="single_host_origin"
+            data-requestvisibleactions="http://schemas.google.com/AddActivity"
+            data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
+    </span>
+</div>
+
+
+
+
 
 </body>
 </html>

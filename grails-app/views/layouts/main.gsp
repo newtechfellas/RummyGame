@@ -47,27 +47,6 @@
 
     <g:layoutBody/>
 
-    <!-- Place this asynchronous JavaScript just before your </body> tag -->
-    <script type="text/javascript">
-
-        function autologin(){
-            if( !$('#signinButton').size() ){
-                gapi.auth.authorize({
-                    client_id: '769451899617-eli6a32e4ll9nuqumh3cgca975h3k7n4.apps.googleusercontent.com',
-                    scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
-                    immediate: true,
-                    response_type: "code token"
-                }, signinCallback );
-            }
-        }
-
-        (function() {
-            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-            po.src = 'https://apis.google.com/js/client:plusone.js?onload=autologin';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-        })();
-    </script>
-
 </div><!-- /.container -->
 
 </body>
