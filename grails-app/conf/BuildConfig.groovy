@@ -42,6 +42,8 @@ grails.project.dependency.resolution = {
         compile "com.google.api-client:google-api-client:1.16.0-rc"
         compile 'com.google.http-client:google-http-client-jackson2:1.16.0-rc'
         compile 'com.google.apis:google-api-services-oauth2:v2-rev48-1.16.0-rc'
+        compile 'javax.mail:mail:1.4.1'
+        compile 'org.hibernate:hibernate-core:4.3.0.Final'
     }
 
     plugins {
