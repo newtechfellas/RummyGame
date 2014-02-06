@@ -85,7 +85,7 @@
                 var request = gapi.client.oauth2.userinfo.get();
                 request.execute(function(obj){
 
-                    $.post('/RummyGame/login/plus', {
+                    $.post('/login/plus', {
                         code: authResult.code,
                         email: obj.email,
                         gPlusId: obj.id

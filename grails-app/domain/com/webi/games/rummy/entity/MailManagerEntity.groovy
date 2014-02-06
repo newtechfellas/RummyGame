@@ -5,7 +5,6 @@ package com.webi.games.rummy.entity
  * San Antonio, Texas
  */
 class MailManagerEntity {
-
     String userId
     String password
 

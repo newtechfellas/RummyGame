@@ -39,9 +39,8 @@ public class DefaultUserRegistrationService implements IUserRegistrationService,
         tx.execute(new TransactionCallbackWithoutResult() {
             public void doInTransactionWithoutResult(TransactionStatus status) {
                 UserRegistryEntity userRegistryEntity = new UserRegistryEntity().with {
-                    userId = registrationVO.emailId
+                    email = registrationVO.emailId
                     password = registrationVO.password
-                    userName = registrationVO.userName
                     registerDate = new java.util.Date()
                 }
                 sessionFactory.getCurrentSession().save(userRegistryEntity);

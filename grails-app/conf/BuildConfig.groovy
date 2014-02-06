@@ -43,14 +43,15 @@ grails.project.dependency.resolution = {
         compile 'com.google.http-client:google-http-client-jackson2:1.16.0-rc'
         compile 'com.google.apis:google-api-services-oauth2:v2-rev48-1.16.0-rc'
         compile 'javax.mail:mail:1.4.1'
-        compile 'org.hibernate:hibernate-core:4.3.0.Final'
+//        compile 'org.hibernate:hibernate-core:4.1.9.Final'
+//        compile 'org.hibernate:hibernate-ehcache:4.3.0.Final'
     }
 
     plugins {
-        runtime ":hibernate:3.6.10.6"
         runtime ":jquery:1.10.2.2"
         runtime ":resources:1.2.1"
 
+        compile ':hibernate4:4.1.11.4'
         compile ":spring-security-core:1.2.7.3"
         compile ":spring-security-facebook:0.15.2"
 

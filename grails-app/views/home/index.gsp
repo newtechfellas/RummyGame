@@ -123,7 +123,7 @@
                     console.log(obj);
 
                     if( obj.email != "${user.username}" ){
-                        location.href = '/RummyGame/logout';
+                        location.href = '/logout';
                         return;
                     }
 

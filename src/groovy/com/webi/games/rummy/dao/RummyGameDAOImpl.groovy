@@ -36,11 +36,11 @@ public class RummyGameDAOImpl implements IRummyGameDAO {
 	final static String HQL_OPEN_GAMES_INVITED_FOR_PLAYER =
             """ FROM RummyGameEntity  game , RummyGameAssociatedPlayersEntity assocPlayers, UserRegistryEntity playerInfo
                 WHERE game.gameId=assocPlayers.gameId AND game.originatorPlayerID != :playerId AND assocPlayers.playerId=:playerId
-                AND playerInfo.userId=game.originatorPlayerID"""
+                AND playerInfo.email=game.originatorPlayerID"""
 	final static String HQL_GAMES_HISTORY_FOR_PLAYER = "FROM RummyGameEntity p WHERE p.originatorPlayerID=:originatorPlayerId AND ( isCompleted=true OR isTerminated=true ) ";
 	final static String HQL_NOT_STARTED_GAME_FOR_PLAYER = "FROM RummyGameEntity p WHERE p.originatorPlayerID=:originatorPlayerId AND isActive=false";
 	
-	final static String HQL_GET_PLAYER_NAMES_FROM_IDS = "From UserRegistryEntity playerInfo WHERE playerInfo.userId in (:playerIds )";
+	final static String HQL_GET_PLAYER_NAMES_FROM_IDS = "From UserRegistryEntity playerInfo WHERE playerInfo.email in (:playerIds )";
 	
 
 	@Autowired

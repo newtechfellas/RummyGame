@@ -1,7 +1,6 @@
-import app.*
 import grails.plugins.springsecurity.SpringSecurityService
 
-class AccountController {
+class HomeController {
 
     SpringSecurityService springSecurityService
 
