@@ -2,29 +2,29 @@ package com.webi.games.rummy.game;
 
 /**
  * Game Object interface
- * 
+ *
  * @author Suman Jakkula
  *
  */
 public interface IRummyGame {
-	
-	IPlayer getWinnerPlayer();
-	
-	long getGameId();
-	
-	String getGameName() ;
 
-	IPlayer getOriginatorPlayer();
+    Player getWinnerPlayer();
 
-	boolean isCompleted() ;
-	
-	boolean isHandPositionDetermined();
-	
-	boolean isTerminated();
+    long getGameId();
 
-	Date getCreationTime() ;
+    String getGameName();
 
-	Date getLastUpdatedTime() ;
+    Player getOriginatorPlayer();
 
-	public boolean isActive() ;
+    boolean isCompleted();
+
+    boolean isHandPositionDetermined();
+
+    boolean isTerminated();
+
+    Date getCreationTime();
+
+    Date getLastUpdatedTime();
+
+    public boolean isActive();
 }

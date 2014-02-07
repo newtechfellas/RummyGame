@@ -2,50 +2,49 @@ package app
 
 class SecUser {
 
-	transient springSecurityService
+    transient springSecurityService
 
-	String username
-	String password
-	boolean enabled = true
-	boolean accountExpired
-	boolean accountLocked
-	boolean passwordExpired
+    String username
+    String password
+    boolean enabled = true
+    boolean accountExpired
+    boolean accountLocked
+    boolean passwordExpired
+    Date registeredDate
+    String providerType
 
-    String favoriteColor
+    static constraints = {
+        username blank: false, unique: true
+        password nullable: true
+    }
 
-	static constraints = {
-		username blank: false, unique: true
-		password nullable: true
-        favoriteColor nullable: true
-	}
+    static mapping = {
+        password column: '`password`'
+    }
 
-	static mapping = {
-		password column: '`password`'
-	}
+    Set<SecRole> getAuthorities() {
+        SecUserRole.findAllByUser(this).collect { it.role } as Set
+    }
 
-	Set<SecRole> getAuthorities() {
-		SecUserRole.findAllByUser(this).collect { it.role } as Set
-	}
-
-	def beforeInsert() {
-		if( password ){
+    def beforeInsert() {
+        if (password) {
             encodePassword()
-        }else{
+        } else {
             password = 'NO_PASSWORD'
         }
-	}
+    }
 
-	def beforeUpdate() {
-		if (isDirty('password')) {
-			encodePassword()
-		}
-	}
+    def beforeUpdate() {
+        if (isDirty('password')) {
+            encodePassword()
+        }
+    }
 
-	protected void encodePassword() {
-		password = springSecurityService.encodePassword(password)
-	}
+    protected void encodePassword() {
+        password = springSecurityService.encodePassword(password)
+    }
 
-    String toString(){
+    String toString() {
         username
     }
 }

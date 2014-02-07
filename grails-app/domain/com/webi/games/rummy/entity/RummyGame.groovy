@@ -1,6 +1,6 @@
 package com.webi.games.rummy.entity
 
-class RummyGameEntity {
+class RummyGame {
     long gameId
     String gameName //Optional Game Name
     String originatorPlayerID  //Player That created the Game
@@ -10,6 +10,7 @@ class RummyGameEntity {
     Date lastUpdatedTime
     boolean isActive; // Is game being played currently
 
+    static hasMany = [associatedPlayers : RummyGameAssociatedPlayers]
     static constraints = {
         id name: 'gameId', generator: 'hilo'
         lastUpdatedTime nullable: true

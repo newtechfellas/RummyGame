@@ -1,6 +1,6 @@
 package com.webi.games.rummy.entity
 
-class RummyGameHandPositionEntity {
+class RummyGameHandPosition {
     long gameId
     String handPositionUserIdListStr
 

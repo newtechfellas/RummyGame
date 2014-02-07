@@ -1,9 +1,11 @@
 package com.webi.games.rummy.dao
-import com.webi.games.rummy.entity.RummyGameAssociatedPlayersEntity
-import com.webi.games.rummy.entity.RummyGameEntity
-import com.webi.games.rummy.entity.RummyGameHandPositionEntity
+
+import com.webi.games.rummy.entity.RummyGame
+import com.webi.games.rummy.entity.RummyGameAssociatedPlayers
+
+import com.webi.games.rummy.entity.RummyGameHandPosition
 import com.webi.games.rummy.game.EmptyNewGameExistsException
-import com.webi.games.rummy.game.IPlayer
+
 import com.webi.games.rummy.game.IRummyGame
 import com.webi.games.rummy.game.Player
 
@@ -18,14 +20,14 @@ public interface IRummyGameDAO {
 	 * @return 	true if the game creation is successful
 	 * 			false otherwise
 	 */
-	RummyGameEntity createNewGame(String gameName, IPlayer player, Set<IPlayer> friendsSet) throws EmptyNewGameExistsException;
+	RummyGame createNewGame(String gameName, Player player, Set<Player> friendsSet) throws EmptyNewGameExistsException;
 	
 	/**
 	 * @param player
 	 * @param friendsSet
 	 * @return
 	 */
-	RummyGameEntity getNotStartedOpenGame( IPlayer player);
+	RummyGame getNotStartedOpenGame( Player player);
 	
 	/**
 	 * @param playerIds
@@ -36,19 +38,19 @@ public interface IRummyGameDAO {
 	 * @param gameId
 	 * @return
 	 */
-	List<RummyGameAssociatedPlayersEntity> getAssociatedPlayersListForGame(long gameId) ;
+	List<RummyGameAssociatedPlayers> getAssociatedPlayersListForGame(long gameId) ;
 	
 	/**
 	 * @param gameId
 	 * @return
 	 */
-	RummyGameHandPositionEntity getHandPositionEntity( long gameId);
+	RummyGameHandPosition getHandPositionEntity( long gameId);
 	
 	/**
 	 * @param player
 	 * @return
 	 */
-	List<RummyGameEntity> getGamesHistoryForPlayer( IPlayer player);
+	List<RummyGame> getGamesHistoryForPlayer( Player player);
 	
 	/**
 	 * Fetch all open games of the player
@@ -56,7 +58,7 @@ public interface IRummyGameDAO {
 	 * @param player
 	 * @return
 	 */
-	List<RummyGameEntity> getAllOpenGamesStartedByPlayer( IPlayer player);
+	List<RummyGame> getAllOpenGamesStartedByPlayer( Player player);
 	
 	/**
 	 * Deletes a game
@@ -65,19 +67,19 @@ public interface IRummyGameDAO {
 	 * @param gameId
 	 * @return
 	 */
-	boolean deleteGame(IPlayer player, RummyGameEntity rummyGame);
+	boolean deleteGame(Player player, RummyGame rummyGame);
 
 	/**
 	 * @param player
 	 * @return
 	 */
-	List<IRummyGame> getAllOpenGamesInvitedForPlayer(IPlayer player);
+	List<IRummyGame> getAllOpenGamesInvitedForPlayer(Player player);
 	
 	/**
 	 * @param gameId
 	 * @return
 	 */
-	RummyGameEntity getGameById(long gameId);
+	RummyGame getGameById(long gameId);
 
 	/**
 	 * @param mailManagerUserId

@@ -8,7 +8,7 @@ enum GameAcceptStatus
     String status
     GameAcceptStatus(String status) { this.status = status}
 }
-class RummyGameAssociatedPlayersEntity {
+class RummyGameAssociatedPlayers {
     long gameId
     String playerId
     GameAcceptStatus gameAcceptStatus = GameAcceptStatus.NO_RESPONSE //default
@@ -16,6 +16,7 @@ class RummyGameAssociatedPlayersEntity {
     //the associated player of this game
     int handPositionSequenceNumber
 
+    static belongsTo = [game: RummyGame]
     static constraints = {
         id composite: ['gameId', 'playerId']
     }
