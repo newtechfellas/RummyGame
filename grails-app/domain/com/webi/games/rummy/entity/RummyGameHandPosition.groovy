@@ -5,6 +5,6 @@ class RummyGameHandPosition {
     String handPositionUserIdListStr
 
     static constraints = {
-        id  name:'gameId'
+        id  column:'gameId', name:'gameId'
     }
 }

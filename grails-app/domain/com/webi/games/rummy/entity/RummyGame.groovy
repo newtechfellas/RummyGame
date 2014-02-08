@@ -12,7 +12,7 @@ class RummyGame {
 
     static hasMany = [associatedPlayers : RummyGameAssociatedPlayers]
     static constraints = {
-        id name: 'gameId', generator: 'hilo'
+        id column: 'gameId', name: 'gameId'
         lastUpdatedTime nullable: true
     }
 }

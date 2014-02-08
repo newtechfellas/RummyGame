@@ -9,14 +9,13 @@ enum GameAcceptStatus
     GameAcceptStatus(String status) { this.status = status}
 }
 class RummyGameAssociatedPlayers {
-    long gameId
     String playerId
     GameAcceptStatus gameAcceptStatus = GameAcceptStatus.NO_RESPONSE //default
     //represents the hand position sequence number of
     //the associated player of this game
     int handPositionSequenceNumber
 
-    static belongsTo = [game: RummyGame]
+    static belongsTo = [gameId: RummyGame]
     static constraints = {
         id composite: ['gameId', 'playerId']
     }

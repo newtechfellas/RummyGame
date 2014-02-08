@@ -19,63 +19,49 @@
         padding: 40px 15px;
         text-align: center;
     }
+    .message {
+        font: bold;
+    }
     </style>
 </head>
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">App</a>
-        </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</div>
-
 <div class="container">
 
     <div class="section">
-        <h1>Welcome, ${user} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
+        <h1>Welcome, ${session.user} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
     </div>
+    <g:hasErrors bean="${command}">
+        <div class="errors">
+            <g:renderErrors as="list" bean="${command}" />
+        </div>
+    </g:hasErrors>
 
     <div class="row">
         <div class="col-md-6">
             <div class="well">
-                <h4>App User Profile</h4>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                Description
-                            </th>
-                            <th>
-                                Value
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Username</td>
-                            <td>${user.username}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Start New Game Option -->
+                <h4>Start New Game</h4>
+                <g:form action="startNewGame">
+                    <section id="NewGameSection">
+                        <div id="emailIds">
+                            <fieldset class="form">
+                                <g:textArea name="playerIds" title="Enter Player Mail Ids One Per Row" placeholder="Enter Player EmailIds One Per Row" cols="70" rows="5"></g:textArea>
+                                <br/>
+                                <br>
+                                Game Name <g:textField name="gameName"></g:textField>
+                        </fieldset>
+                        </div>
+                        <g:submitButton name="Create New Game And Send Invite" />
+                    </section>
+                </g:form>
             </div>
         </div>
-        <g:if test="${session.authProvider == 'Google'}">
+        <!-- Existing Games open  -->
         <div class="col-md-6">
             <div class="well">
-                <h4>Google+ User Profile</h4>
+                <h4>Games History</h4>
                 <table id="gplus-profile" class="table table-striped">
                     <thead>
                     <tr>
@@ -91,7 +77,6 @@
                 </table>
             </div>
         </div>
-        </g:if>
     </div>
 
     <script>
