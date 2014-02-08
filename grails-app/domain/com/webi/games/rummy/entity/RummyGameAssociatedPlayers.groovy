@@ -14,10 +14,9 @@ class RummyGameAssociatedPlayers {
     //represents the hand position sequence number of
     //the associated player of this game
     int handPositionSequenceNumber
-
     static belongsTo = [gameId: RummyGame]
     static constraints = {
-        id composite: ['gameId', 'playerId']
+        id composite: ['playerId']
     }
 
 }
