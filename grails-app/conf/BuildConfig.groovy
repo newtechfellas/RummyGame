@@ -1,9 +1,9 @@
-grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
@@ -43,6 +43,9 @@ grails.project.dependency.resolution = {
         compile 'com.google.http-client:google-http-client-jackson2:1.16.0-rc'
         compile 'com.google.apis:google-api-services-oauth2:v2-rev48-1.16.0-rc'
         compile 'javax.mail:mail:1.4.1'
+        compile "org.springframework:spring-messaging:4.0.0.RELEASE"
+        compile "org.springframework:spring-websocket:4.0.0.RELEASE"
+        compile "org.springframework:spring-webmvc:4.0.0.RELEASE"
 //        compile 'org.hibernate:hibernate-core:4.1.9.Final'
 //        compile 'org.hibernate:hibernate-ehcache:4.3.0.Final'
     }
@@ -61,11 +64,12 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.5"
-
-        build ":tomcat:7.0.47"
+        compile ":spring-websocket:0.1.BUILD-SNAPSHOT"
+        build ":tomcat8:8.0.1"
+//        build 'org.apache.tomcat:tomcat-catalina-ant:8.0.0-RC10'
 
         runtime ":database-migration:1.3.8"
 
-        compile ':cache:1.0.1'
+//        compile ':cache:1.0.1'
     }
 }

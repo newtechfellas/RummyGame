@@ -23,9 +23,29 @@
         font: bold;
     }
     </style>
+
+    <r:require modules="jquery, spring-websocket" />
+    <r:script>
+            var socket = new SockJS("${createLink(uri: '/stomp')}");
+            var client = Stomp.over(socket);
+
+            client.connect({}, function() {
+                client.subscribe("/topic/hello", function(message) {
+                    $("#helloDiv").append(message.body);
+                });
+            });
+
+            $("#helloButton").click(function() {
+                client.send("/app/hello", {}, "");
+            });
+    </r:script>
 </head>
 
 <body>
+
+<button id="helloButton">hello</button>
+<div id="helloDiv"></div>
+
 
 <div class="container">
 
@@ -82,14 +102,15 @@
             <div class="well">
                 <h4>Friends List</h4>
                 <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>
-                            Value
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    <g:each in="${invitedPlayers}">
+                        <tr>
+                            <td>
+                            ${it}
+                            </td>
+                        </tr>
+                    </g:each>
+                    </tbody>
                 </table>
             </div>
         </div>

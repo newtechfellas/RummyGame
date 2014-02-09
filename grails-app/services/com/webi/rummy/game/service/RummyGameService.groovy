@@ -3,6 +3,7 @@ package com.webi.rummy.game.service
 import com.webi.games.rummy.entity.RummyGame
 import com.webi.games.rummy.entity.RummyGameAssociatedPlayer
 import grails.transaction.Transactional
+import org.hibernate.Criteria
 
 @Transactional
 class RummyGameService {
@@ -17,14 +18,15 @@ class RummyGameService {
     }
 
     List<String> getAllInvitedPlayersFor(String playerID) {
-        def results = RummyGameAssociatedPlayer.withCriteria {
+        def results = RummyGameAssociatedPlayer.withCriteria  {
             projections { property('playerId') }
             'in'('game.id', RummyGame.withCriteria {
                 projections { property('id') }
                 eq('originatorPlayerID', playerID)
             }
             )
+            resultTransformer Criteria.DISTINCT_ROOT_ENTITY
         }
-        println "results size is ${results}"
+        return results
     }
 }

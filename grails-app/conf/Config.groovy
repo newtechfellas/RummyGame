@@ -106,11 +106,12 @@ grails {
                     '/console/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
                     '/dbconsole/**': ['IS_AUTHENTICATED_FULLY'],
                     '/home/**': ['IS_AUTHENTICATED_FULLY'],
+                    '/stomp/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                    '/static/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
                     '/': ['IS_AUTHENTICATED_FULLY'],
                     '/*': ['IS_AUTHENTICATED_ANONYMOUSLY']
             ]
             rejectIfNoRule = true
-
             successHandler.defaultTargetUrl='/home'
         }
     }
