@@ -1,7 +1,7 @@
 package com.webi.games.rummy.dao
 
 import com.webi.games.rummy.entity.RummyGame
-import com.webi.games.rummy.entity.RummyGameAssociatedPlayers
+import com.webi.games.rummy.entity.RummyGameAssociatedPlayer
 import com.webi.games.rummy.entity.RummyGameHandPosition
 import com.webi.games.rummy.game.EmptyNewGameExistsException
 import com.webi.games.rummy.game.IRummyGame
@@ -32,7 +32,7 @@ public class RummyGameDAOImpl implements IRummyGameDAO {
     }
 
     @Override
-    List<RummyGameAssociatedPlayers> getAssociatedPlayersListForGame(long gameId) {
+    List<RummyGameAssociatedPlayer> getAssociatedPlayersListForGame(long gameId) {
         return null
     }
 

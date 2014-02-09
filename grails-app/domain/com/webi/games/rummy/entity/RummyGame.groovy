@@ -1,7 +1,6 @@
 package com.webi.games.rummy.entity
 
 class RummyGame {
-    long gameId
     String gameName //Optional Game Name
     String originatorPlayerID  //Player That created the Game
     boolean isCompleted // Is game played till the end and completed
@@ -10,9 +9,8 @@ class RummyGame {
     Date lastUpdatedTime
     boolean isActive; // Is game being played currently
 
-    static hasMany = [associatedPlayers : RummyGameAssociatedPlayers]
+    static hasMany = [associatedPlayers : RummyGameAssociatedPlayer]
     static constraints = {
-        id column: 'gameId', name: 'gameId'
         lastUpdatedTime nullable: true
     }
 }
