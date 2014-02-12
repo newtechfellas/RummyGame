@@ -43,9 +43,9 @@ grails.project.dependency.resolution = {
         compile 'com.google.http-client:google-http-client-jackson2:1.16.0-rc'
         compile 'com.google.apis:google-api-services-oauth2:v2-rev48-1.16.0-rc'
         compile 'javax.mail:mail:1.4.1'
-        compile "org.springframework:spring-messaging:4.0.0.RELEASE"
-        compile "org.springframework:spring-websocket:4.0.0.RELEASE"
-        compile "org.springframework:spring-webmvc:4.0.0.RELEASE"
+//        compile "org.springframework:spring-messaging:4.0.0.RELEASE"
+//        compile "org.springframework:spring-websocket:4.0.0.RELEASE"
+//        compile "org.springframework:spring-webmvc:4.0.0.RELEASE"
 //        compile 'org.hibernate:hibernate-core:4.1.9.Final'
 //        compile 'org.hibernate:hibernate-ehcache:4.3.0.Final'
     }
@@ -65,7 +65,7 @@ grails.project.dependency.resolution = {
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.5"
         compile ":spring-websocket:0.1.BUILD-SNAPSHOT"
-        build ":tomcat8:8.0.1"
+        build ":tomcat8:8.0.1.1"
 //        build 'org.apache.tomcat:tomcat-catalina-ant:8.0.0-RC10'
 
         runtime ":database-migration:1.3.8"

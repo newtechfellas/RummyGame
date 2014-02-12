@@ -3,19 +3,22 @@ import com.webi.rummy.game.service.EmailService
 import com.webi.rummy.game.service.RummyGameService
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.validation.Validateable
-import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.messaging.simp.SimpMessagingTemplate
 
 class HomeController {
 
     SpringSecurityService springSecurityService
     EmailService emailService
     RummyGameService rummyGameService
+    SimpMessagingTemplate brokerMessagingTemplate
 
     def index = {
         //Perhaps a bad choice to place user object in session for gsp access. Its ok for this app.
         session['user'] = springSecurityService.currentUser
-        hello()
+        if (! session['logonEventSent'] ) {
+            brokerMessagingTemplate.convertAndSend "/topic/hello", "${session['user'].username}" as String
+            session['logonEventSent']=true
+        }
         render view: 'index', model: getHomePageModel()
     }
 
@@ -27,7 +30,6 @@ class HomeController {
                 rummyGameService.createNewGame(loggedInUser.username, playerIds, command.gameName)
 //                emailService.sendGameInviteEmail(loggedInUser.username, playerIds,command.gameName)
             }
-            hello()
             //refresh the home page
             Map model = getHomePageModel()
             model.put('command', command)
@@ -41,13 +43,6 @@ class HomeController {
         List<String> invitedPlayers = rummyGameService.getAllInvitedPlayersFor(loggedInUser.username)
         Map model = [invitedPlayers: invitedPlayers, loggedInUser: loggedInUser ]
         return model
-    }
-
-    @MessageMapping("/hello")
-    @SendTo("/topic/hello")
-    protected String hello() {
-
-        return "hello from controller!"
     }
 }
 
