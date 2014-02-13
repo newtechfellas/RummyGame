@@ -1,4 +1,6 @@
 import app.SecUser
+import com.webi.ent.util.RummyGameUtil
+import com.webi.games.rummy.game.Player
 import com.webi.rummy.game.service.EmailService
 import com.webi.rummy.game.service.RummyGameService
 import grails.plugins.springsecurity.SpringSecurityService
@@ -13,36 +15,38 @@ class HomeController {
     SimpMessagingTemplate brokerMessagingTemplate
 
     def index = {
-        //Perhaps a bad choice to place user object in session for gsp access. Its ok for this app.
-        session['user'] = springSecurityService.currentUser
-        if (! session['logonEventSent'] ) {
-            brokerMessagingTemplate.convertAndSend "/topic/hello", "${session['user'].username}" as String
-            session['logonEventSent']=true
+        String userName = ((SecUser) springSecurityService.currentUser).username
+
+        if (!session['userName']) {
+            RummyGameUtil.addToLoggedInUsersTable(userName)
+            brokerMessagingTemplate.convertAndSend "/topic/hello", userName
+            session['userName'] = userName
         }
         render view: 'index', model: getHomePageModel()
     }
 
     def startNewGame = {
         StartNewGameCommand command ->
-            SecUser loggedInUser = session['user']
+            String loggedInUser = session['userName']
             if (command.validate()) {
                 List playerIds = command.playerIds.tokenize('\r\n');
-                rummyGameService.createNewGame(loggedInUser.username, playerIds, command.gameName)
+                rummyGameService.createNewGame(loggedInUser, playerIds, command.gameName)
 //                emailService.sendGameInviteEmail(loggedInUser.username, playerIds,command.gameName)
             }
             //refresh the home page
             Map model = getHomePageModel()
             model.put('command', command)
-            render view:'index', model : model
+            render view: 'index', model: model
     }
 
     Map getHomePageModel() {
-        SecUser loggedInUser = session['user']
+        String loggedInUser = session['userName']
         // fetch all the invited players across all games for currently logged in player. Required to display
         // active status of all friends to initiate chat with. Like facebook/google chat
-        List<String> invitedPlayers = rummyGameService.getAllInvitedPlayersFor(loggedInUser.username)
-        Map model = [invitedPlayers: invitedPlayers, loggedInUser: loggedInUser ]
-        return model
+        List<Player> currentPlayerFriends = rummyGameService.getAllPlayerIDsKnownTo(loggedInUser)?.collect {
+            new Player(emailId: it, isLoggedInNow: RummyGameUtil.isUsedLoggedInNow(it))
+        }
+        [currentPlayerFriends: currentPlayerFriends, loggedInUser: loggedInUser]
     }
 }
 

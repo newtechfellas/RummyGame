@@ -22,6 +22,7 @@
     .message {
         font: bold;
     }
+    .chat_player { }
     </style>
 
     <r:require modules="jquery, spring-websocket" />
@@ -30,27 +31,18 @@
             var client = Stomp.over(socket);
 
             client.connect({}, function() {
-                client.subscribe("/topic/hello", function(message) {
-                    $("#helloDiv").append(message.body);
-                });
-            });
+                client.subscribe("/topic/loggedInUser", function(message) {
 
-            $("#helloButton").click(function() {
-                client.send("/app/hello", {}, "");
+                });
             });
     </r:script>
 </head>
 
 <body>
-
-<button id="helloButton">hello</button>
-<div id="helloDiv"></div>
-
-
 <div class="container">
 
     <div class="section">
-        <h1>Welcome, ${session.user} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
+        <h1>Welcome, ${session.userName} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
     </div>
     <g:hasErrors bean="${command}">
         <div class="errors">
@@ -103,10 +95,18 @@
                 <h4>Friends List</h4>
                 <table class="table table-striped">
                     <tbody>
-                    <g:each in="${invitedPlayers}">
+                    <g:each in="${currentPlayerFriends}" var="player">
                         <tr>
+                            <td class="chat_player">
+                                ${player.emailId}
+                            </td>
                             <td>
-                                ${it}
+                                <g:if test="${player.isLoggedInNow}">
+                                    ACTIVE
+                                </g:if>
+                                <g:else>
+                                    INACTIVE
+                                </g:else>
                             </td>
                         </tr>
                     </g:each>
