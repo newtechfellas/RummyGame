@@ -16,10 +16,9 @@ class HomeController {
 
     def index = {
         String userName = ((SecUser) springSecurityService.currentUser).username
-
         if (!session['userName']) {
             RummyGameUtil.addToLoggedInUsersTable(userName)
-            brokerMessagingTemplate.convertAndSend "/topic/hello", userName
+            brokerMessagingTemplate.convertAndSend "/topic/loggedIn", userName
             session['userName'] = userName
         }
         render view: 'index', model: getHomePageModel()

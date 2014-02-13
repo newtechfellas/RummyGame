@@ -31,8 +31,19 @@
             var client = Stomp.over(socket);
 
             client.connect({}, function() {
-                client.subscribe("/topic/loggedInUser", function(message) {
-
+                client.subscribe("/topic/loggedIn", function(message) {
+                    var userName = message.body.replace(/"/g,'') //Not sure why extra double quotes surround the message body string
+                    var activeStatus = $("td.chat_player_id:contains('"+userName+"')").next()
+                    if ( activeStatus && activeStatus.text().trim() == 'INACTIVE') {
+                        activeStatus.html('ACTIVE')
+                    }
+                });
+                client.subscribe("/topic/loggedOut", function(message) {
+                    var userName = message.body.replace(/"/g,'') //Not sure why extra double quotes surround the message body string
+                    var activeStatus = $("td.chat_player_id:contains('"+userName+"')").next()
+                    if ( activeStatus && activeStatus.text().trim() == 'ACTIVE') {
+                        activeStatus.html('INACTIVE')
+                    }
                 });
             });
     </r:script>
@@ -97,7 +108,7 @@
                     <tbody>
                     <g:each in="${currentPlayerFriends}" var="player">
                         <tr>
-                            <td class="chat_player">
+                            <td class="chat_player_id">
                                 ${player.emailId}
                             </td>
                             <td>
