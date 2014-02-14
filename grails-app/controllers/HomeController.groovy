@@ -1,8 +1,11 @@
 import app.SecUser
 import com.webi.ent.util.RummyGameUtil
+import com.webi.games.rummy.entity.RummyGame
+import com.webi.games.rummy.entity.RummyGameAssociatedPlayer
 import com.webi.games.rummy.game.Player
 import com.webi.rummy.game.service.EmailService
 import com.webi.rummy.game.service.RummyGameService
+import grails.converters.JSON
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.validation.Validateable
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -45,7 +48,16 @@ class HomeController {
         List<Player> currentPlayerFriends = rummyGameService.getAllPlayerIDsKnownTo(loggedInUser)?.collect {
             new Player(emailId: it, isLoggedInNow: RummyGameUtil.isUsedLoggedInNow(it))
         }
-        [currentPlayerFriends: currentPlayerFriends, loggedInUser: loggedInUser]
+        Map modelMap = [currentPlayerFriends: currentPlayerFriends, loggedInUser: loggedInUser]
+        List<RummyGame> gamesStartedByPlayer = RummyGame.findAllByOriginatorPlayerID(loggedInUser)
+        if ( gamesStartedByPlayer ) {
+            modelMap.put('openGamesByMeJson', gamesStartedByPlayer as JSON )
+        }
+        List gamesReceivedInvitation = RummyGameAssociatedPlayer.findAllByPlayerId(loggedInUser)?.collect { it.game }
+        if ( gamesReceivedInvitation ) {
+            modelMap.put('openInvitedGamesJson', gamesReceivedInvitation as JSON )
+        }
+        return modelMap
     }
 }
 
