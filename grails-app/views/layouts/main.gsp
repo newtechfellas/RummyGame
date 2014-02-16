@@ -23,6 +23,16 @@
     <g:layoutHead/>
     <r:layoutResources/>
 </head>
+<script>
+    jQuery.fn.exists = function(){return this.length>0;}
+    function dbg(message) {
+        if ( console ) {
+            console.log(message)
+        } else {
+            alert(message)
+        }
+    }
+</script>
 
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">

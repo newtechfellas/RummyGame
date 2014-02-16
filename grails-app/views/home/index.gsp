@@ -1,3 +1,4 @@
+<%@ page import="com.webi.games.rummy.entity.RummyGame" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,51 +28,14 @@
 
     .chat_player {
     }
+    .ngrt {
+        font: bold;
+    }
     </style>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/2.9.0/build/fonts/fonts-min.css"/>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/2.9.0/build/datatable/assets/skins/sam/datatable.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="http://yui.yahooapis.com/2.6.0/build/button/assets/skins/sam/button.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="http://yui.yahooapis.com/2.9.0/build/paginator/assets/skins/sam/paginator.css"/>
-
-    <!-- Combo-handled YUI CSS files: -->
-    <link rel="stylesheet" type="text/css"
-          href="http://yui.yahooapis.com/combo?2.9.0/build/paginator/assets/skins/sam/paginator.css&2.9.0/build/datatable/assets/skins/sam/datatable.css">
     <!-- Combo-handled YUI JS files: -->
-    <script type="text/javascript"
-            src="http://yui.yahooapis.com/combo?2.9.0/build/yahoo-dom-event/yahoo-dom-event.js&2.9.0/build/connection/connection-min.js&2.9.0/build/element/element-min.js&2.9.0/build/paginator/paginator-min.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/datatable/datatable-min.js&2.9.0/build/json/json-min.js"></script>
-
-    <script src="http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js"></script>
-    <script src="http://yui.yahooapis.com/2.9.0/build/event-delegate/event-delegate-min.js"></script>
-    <script src="http://yui.yahooapis.com/2.9.0/build/dom/dom-min.js"></script>
-    <script src="http://yui.yahooapis.com/2.9.0/build/button/button.js"></script>
-    <script src="http://yui.yahooapis.com/2.9.0/build/json/json-min.js"></script>
-
-    <style type="text/css">
-    .yui-skin-sam .yui-dt-liner {
-        white-space: nowrap;
-    }
-
-    .yuiCellImage {
-        height: 25px;
-    }
-
-    #paginated {
-        text-align: center;
-    }
-
-    #paginated table {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    #paginated, #paginated .yui-dt-loading {
-        text-align: center;
-        background-color: transparent;
-    }
-    </style>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <r:require modules="jquery, spring-websocket"/>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <r:script>
             var socket = new SockJS("${createLink(uri: '/stomp')}");
             var client = Stomp.over(socket);
@@ -91,11 +55,77 @@
                         activeStatus.html('INACTIVE')
                     }
                 });
+                client.subscribe("/topic/general", function(message) {
+                    var json = JSON.parse(JSON.parse(message.body));
+                    for (var i=0 ; i < json.messages.length;i++)
+                    {
+                        var message = json.messages[i]
+                        switch (message.type) {
+                            case 'ngrt' :
+                               if ( $('#'+'gameStartedByMe_'+message.gameId).exists() ) { //if the game is startedBy current logged in player display the message to him
+                                $('#notifcations').append('<p class="ngrt">'+message.fromUser+ ' accepted '+message.gameName+' game</p>')
+                               }
+                               var openInviteRowElement = $('#'+'openInvite_row_'+message.gameName+'_'+message.gameId);
+                               if (openInviteRowElement.exists()) {
+                                    //grab its first 2 cells and use for participatedGamesTable
+                                   $(openInviteRowElement).find('td:last').replaceWith('<td>WON</td>');
+                                    $('#participatedGames table tbody').append(openInviteRowElement);
+                                    $('#participatedGames').show()
+                               }
+                        }
+                    }
+                });
             });
     </r:script>
+    <script type="text/javascript">
+        $(document).ready( function(){
+            $(".cb-enable").click(function(){
+                sendNewGameResponse($(this).attr('gameId'), $(this).attr('gameName'), 'Accept')
+
+                var parent = $(this).parents('.switch');
+                $('.cb-disable',parent).removeClass('selected');
+                $(this).addClass('selected');
+                $('.checkbox',parent).attr('checked', true);
+            });
+            $(".cb-disable").click(function(){
+                sendNewGameResponse($(this).attr('gameId'), $(this).attr('gameName'),  'Reject')
+
+                var parent = $(this).parents('.switch');
+                $('.cb-enable',parent).removeClass('selected');
+                $(this).addClass('selected');
+                $('.checkbox',parent).attr('checked', false);
+            });
+        });
+        function sendNewGameResponse(gameId,gameName, choice) {
+            var newGameResponse = {
+                "id" : gameId,
+                "gameName": gameName,
+                "selectedAction" : choice
+            }
+            client.send("/app/newGame/response", {}, JSON.stringify(newGameResponse));
+        }
+    </script>
+    <style type="text/css">
+    * { margin: 0; padding: 0: }
+    body { font-family: Arial, Sans-serif; }
+    .field { width: 100%; float: left; margin: 0 0 20px; }
+    .field input { margin: 0 0 0 20px; }
+
+    /* Used for the Switch effect: */
+    .cb-enable, .cb-disable, .cb-enable span, .cb-disable span { background: url(<g:createLinkTo file="images/switch.gif"></g:createLinkTo>) repeat-x; display: block; float: left; }
+    .cb-enable span, .cb-disable span { line-height: 30px; display: block; background-repeat: no-repeat; font-weight: bold; }
+    .cb-enable span { background-position: left -90px; padding: 0 10px; }
+    .cb-disable span { background-position: right -180px;padding: 0 10px; }
+    .cb-disable.selected { background-position: 0 -30px; }
+    .cb-disable.selected span { background-position: right -210px; color: #fff; }
+    .cb-enable.selected { background-position: 0 -60px; }
+    .cb-enable.selected span { background-position: left -150px; color: #fff; }
+    .switch label { cursor: pointer; }
+    </style>
 </head>
 
 <body>
+
 <div class="container">
 
     <div class="section">
@@ -106,6 +136,11 @@
             <g:renderErrors as="list" bean="${command}"/>
         </div>
     </g:hasErrors>
+
+    <!-- Notifications section-->
+    <section id="notifcations">
+
+    </section>
 
     <div class="row">
         <div class="col-md-6">
@@ -130,21 +165,114 @@
             </div>
         </div>
     <!-- Existing Games open  -->
-        <g:if test="${openGamesByMeJson || openInvitedGamesJson }">
+
             <div class="col-md-6">
+                <g:if test="${gamesStartedByMe}">
                 <div class="well">
-                    <div id="existingGames" class="yui-skin-sam">
-                        <h4>Games History</h4>
-                        <!-- YUI Table to hold the existing games data -->
-                        <div id="existingStartedByMeTable"></div>
-
-                        <!-- YUI Table to hold the existing games data -->
-                        <div id="invitedGamesTable"></div>
-                    </div>
+                    <h4>Games I Started</h4>
+                    <table id="gamesStartedByMe" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Born On
+                            </th>
+                            <th>
+                                Dirty On
+                            </th>
+                            <th>
+                                Delete?
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <g:each in="${gamesStartedByMe}">
+                            <tr>
+                                <td><span style="display: none" id="gameStartedByMe_${it.id}">${it.id}</span> <g:link controller="gameDetails" name="${it.gameName}" params="[id:"${it.id}"]">${it.gameName}</g:link></td>
+                                <td>${it.creationTime}</td>
+                                <td>${it.lastUpdatedTime}</td>
+                                <td><a title="Delete Game" href="javascript:void(0);">
+                                    <img alt="Delete Game"
+                                         src="<g:createLinkTo file="images/24_empty_trash.jpg"/>">
+                                    </a>
+                                </td>
+                            </tr>
+                        </g:each>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </g:if>
+                </g:if>
+                <g:if test="${openInvitations}">
+                    <div class="well">
+                        <h4>Open Invitations</h4>
+                        <table id="openInvitations" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Invited By
+                                </th>
+                                <th>
+                                    Response
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <g:each in="${openInvitations}">
+                                <tr id="openInvite_row_${it.gameName}_${it.id}">
+                                    <td><g:link controller="gameDetails" name="${it.gameName}" params="[id:"${it.id}"]">${it.gameName}</g:link></td>
+                                    <td>${it.originatorPlayerID}</td>
+                                    <td>
+                                        <p class="field switch">
+                                            <input type="radio" style="display:none" id="newGameResponse_${it.id}_1" name="newGameResponse" />
+                                            <input type="radio" style="display:none" id="newGameResponse_${it.id}_2" name="newGameResponse" />
+                                            <label for="newGameResponse_${it.id}_1" gameName="${it.gameName}" gameId="${it.id}" class="cb-enable"><span>Accept</span></label>
+                                            <label for="newGameResponse_${it.id}_2" gameName="${it.gameName}" gameId="${it.id}" class="cb-disable"><span>Reject</span></label>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </g:each>
+                            </tbody>
+                        </table>
+                    </div>
+                </g:if>
 
+                <div class="well" id="participatedGames" <g:if test="${!participatedGames}">style="display: none"</g:if>>
+                    <h4>Games Participated</h4>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Invited By
+                            </th>
+                            <th>
+                                Result
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <g:if test="${participatedGames}">
+                            <g:each in="${participatedGames}">
+                                <tr>
+                                    <td><g:link controller="gameDetails" name="${it.gameName}" params="[id:"${it.id}"]">${it.gameName}</g:link></td>
+                                    <td>${it.originatorPlayerID}</td>
+                                    <td>
+                                        WON
+                                    </td>
+                                </tr>
+                            </g:each>
+                        </g:if>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
 
         <div class="col-md-6">
             <div class="well">
@@ -171,94 +299,6 @@
             </div>
         </div>
     </div>
-
 </div><!-- /.container -->
-<script>
-    <g:if test="${openGamesByMeJson}">
-    function drawExistingGamesStartedByMeTable(openGamesByMeJson) {
-        var deleteCellFormatter = function (elCell, oRecord, oColumn, oData) {
-            elCell.innerHTML = '<a title="Delete Game" href="javascript:void(0);"><img class="yuiCellImage" alt="Delete Game" src="https://raw2.github.com/iWebi/RummyGame/master/WebContent/images/24_empty_trash.jpg"></a>';
-        };
-
-        var idCellFormatter = function (elCell, oRecord, oColumn, oData) {
-            elCell.innerHTML = '<a title="id" href="/games/rummy/game?id=' + oData + '">' + oData + '</a>';
-        };
-
-
-        var myColumnDefs = [
-            {key: "gameName", label: "Name", formatter: idCellFormatter, sortable: true, resizeable: true},
-            {key: "creationTime", label: "Created On", sortable: true, resizeable: true},
-            {key: "lastUpdatedTime", label: "Last Modified On", sortable: true, resizeable: true},
-            {key: "delete", label: "", formatter: deleteCellFormatter, sortable: true, resizeable: true},
-        ];
-
-        var myDataSource = new YAHOO.util.DataSource(openGamesByMeJson);
-        myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-
-        myDataSource.responseSchema = { fields: ["creationTime", "id", "gameName", "lastUpdatedTime" ] };
-        var myDataTable = new YAHOO.widget.DataTable("existingStartedByMeTable", myColumnDefs, myDataSource,
-                {
-                    caption: "Games Started By Me",
-                    paginator: new YAHOO.widget.Paginator({
-                        rowsPerPage: 6,
-                        alwaysVisible: false
-                    })
-                });
-
-        //Delete Game event handling
-        myDataTable.subscribe('cellClickEvent', function (ev) {
-            var target = YAHOO.util.Event.getTarget(ev);
-            var column = myDataTable.getColumn(target);
-
-            if (column.key == 'delete') {
-                var id = this.getRecord(target).getData('id');
-                var deleteConfirm = window.confirm("This can not be undone. Are you sure you want to delete the game?")
-                if (deleteConfirm) {
-                    myDataTable.deleteRow(target);
-                }
-            }
-        });
-    }
-    drawExistingGamesStartedByMeTable(${openGamesByMeJson});
-    </g:if>
-
-    <g:if test="${openInvitedGamesJson}">
-    function drawInvitedGamesTable(openInvitedGamesJson)
-    {
-        var gameIdCellFormatter = function(elCell, oRecord, oColumn, oData) {
-            elCell.innerHTML = '<a title="GameId" href="/games/rummy/game?gameId='+oData+'">'+oData+'</a>';
-        };
-
-        var myColumnDefs = [
-            {key:"gameName", label: "Name", formatter:gameIdCellFormatter, sortable:true,resizeable:true},
-            {key:"originatorPlayerID", label: "InvitedBy", sortable:true,resizeable:true},
-            {key:"creationTime", label: "Created On", sortable:true, resizeable:true},
-            {key:"lastUpdatedTime", label:"Last Modified On", sortable:true,resizeable:true},
-            {key:"action", label:"Action", formatter:"dropdown", dropdownOptions:["-Select-","Accept","Reject","Delete"],resizeable:true},
-        ];
-
-        var myDataSource = new YAHOO.util.DataSource(openInvitedGamesJson);
-        myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-
-        myDataSource.responseSchema = { fields: ["creationTime","gameId", "originatorPlayerID", "gameName", "lastUpdatedTime", "action"] };
-        var myDataTable = new YAHOO.widget.DataTable("invitedGamesTable", myColumnDefs, myDataSource,
-                {
-                    caption:"Games I Got Invited For",
-                    paginator: new YAHOO.widget.Paginator({
-                        rowsPerPage: 6,
-                        alwaysVisible : false
-                    })
-                });
-        myDataTable.subscribe("dropdownChangeEvent", function(oArgs){
-            var elDropdown = oArgs.target;
-            var oRecord = this.getRecord(elDropdown);
-            oRecord.setData("action",elDropdown.options[elDropdown.selectedIndex].value);
-            alert("hehehehe. This feature is not yet built. Hang on till next upgrade!!!");
-        });
-    }
-    drawInvitedGamesTable(${openInvitedGamesJson});
-    </g:if>
-</script>
-
 </body>
 </html>

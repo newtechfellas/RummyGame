@@ -1,14 +1,21 @@
 import app.SecUser
+import com.google.gson.Gson
 import com.webi.ent.util.RummyGameUtil
+import com.webi.games.rummy.entity.GameAcceptStatus
 import com.webi.games.rummy.entity.RummyGame
 import com.webi.games.rummy.entity.RummyGameAssociatedPlayer
+import com.webi.games.rummy.game.GenericTopicVO
+import com.webi.games.rummy.game.NewGameResponseVO
+import com.webi.games.rummy.game.NotificationVO
 import com.webi.games.rummy.game.Player
 import com.webi.rummy.game.service.EmailService
 import com.webi.rummy.game.service.RummyGameService
-import grails.converters.JSON
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.validation.Validateable
+import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate
+
+import java.security.Principal
 
 class HomeController {
 
@@ -16,6 +23,8 @@ class HomeController {
     EmailService emailService
     RummyGameService rummyGameService
     SimpMessagingTemplate brokerMessagingTemplate
+    private static final String NEW_GAME_RESPONSE_TYPE = 'ngrt'
+    Gson gson = new Gson()
 
     def index = {
         String userName = ((SecUser) springSecurityService.currentUser).username
@@ -50,14 +59,36 @@ class HomeController {
         }
         Map modelMap = [currentPlayerFriends: currentPlayerFriends, loggedInUser: loggedInUser]
         List<RummyGame> gamesStartedByPlayer = RummyGame.findAllByOriginatorPlayerID(loggedInUser)
-        if ( gamesStartedByPlayer ) {
-            modelMap.put('openGamesByMeJson', gamesStartedByPlayer as JSON )
+        if (gamesStartedByPlayer) {
+            modelMap.put('gamesStartedByMe', gamesStartedByPlayer)
         }
-        List gamesReceivedInvitation = RummyGameAssociatedPlayer.findAllByPlayerId(loggedInUser)?.collect { it.game }
-        if ( gamesReceivedInvitation ) {
-            modelMap.put('openInvitedGamesJson', gamesReceivedInvitation as JSON )
+        List<RummyGameAssociatedPlayer> associatedGames = RummyGameAssociatedPlayer.findAllByPlayerId(loggedInUser)
+        if (associatedGames) {
+            List gamesReceivedInvitation = associatedGames.findAll {
+                it.gameAcceptStatus == GameAcceptStatus.NO_RESPONSE
+            }.collect { it.game }
+            if (gamesReceivedInvitation) {
+                modelMap.put('openInvitations', gamesReceivedInvitation)
+            }
+            List gamesParticipated = associatedGames.findAll {
+                it.gameAcceptStatus != GameAcceptStatus.NO_RESPONSE
+            }.collect { it.game }
+            if (gamesParticipated) {
+                modelMap.put('participatedGames', gamesParticipated)
+            }
         }
         return modelMap
+    }
+
+    @MessageMapping("/newGame/response")
+    protected void newGameUserResponse(NewGameResponseVO newGameResponse, Principal principal) {
+        if (rummyGameService.handleNewGameResponse(principal.getName(), newGameResponse)) {
+            GenericTopicVO genericTopicVO = new GenericTopicVO()
+            genericTopicVO.messages <<
+                    new NotificationVO(type: NEW_GAME_RESPONSE_TYPE, message: newGameResponse.selectedAction,
+                            gameId: newGameResponse.id, gameName: newGameResponse.gameName, fromUser: principal.getName())
+            brokerMessagingTemplate.convertAndSend "/topic/general", gson.toJson(genericTopicVO)
+        }
     }
 }
 

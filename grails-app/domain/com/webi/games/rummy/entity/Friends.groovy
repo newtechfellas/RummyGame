@@ -9,6 +9,6 @@ class Friends {
     }
     static mapping = {
         playerId index: 'player_to_friend_index'
-        friendPlayerId index: 'friend_to_player_index'
+        friendPlayerId index: 'player_to_friend_index'
     }
 }
