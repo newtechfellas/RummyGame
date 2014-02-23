@@ -1,5 +1,3 @@
-import rummygame.GameDetailsController
-
 class UrlMappings {
 
 	static mappings = {

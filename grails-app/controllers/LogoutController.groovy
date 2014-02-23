@@ -1,5 +1,5 @@
 import com.webi.ent.util.RummyGameUtil
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.messaging.simp.SimpMessagingTemplate
 
 class LogoutController {

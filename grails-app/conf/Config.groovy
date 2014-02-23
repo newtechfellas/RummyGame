@@ -83,7 +83,7 @@ log4j = {
            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
            'org.codehaus.groovy.grails.commons',            // core / classloading
-           'org.codehaus.groovy.grails.plugins',            // plugins
+           'org.codehaus.groovy.grails.plugin',            // plugins
            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
            'org.springframework',
            'org.hibernate',
@@ -91,13 +91,13 @@ log4j = {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'app.SecUser'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'app.SecUserRole'
-grails.plugins.springsecurity.authority.className = 'app.SecRole'
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'app.SecUser'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'app.SecUserRole'
+grails.plugin.springsecurity.authority.className = 'app.SecRole'
 
 
 grails {
-    plugins {
+    plugin {
         springsecurity {
             securityConfigType = 'InterceptUrlMap'
             interceptUrlMap = [
@@ -118,9 +118,9 @@ grails {
     }
 }
 
-grails.plugins.springsecurity.facebook.domain.classname='app.FacebookUser'
-grails.plugins.springsecurity.facebook.appId='607277269325617'
-grails.plugins.springsecurity.facebook.secret=System.getenv('RUMMY_GAME_FACEBOOK_SECRET')
+grails.plugin.springsecurity.facebook.domain.classname='app.FacebookUser'
+grails.plugin.springsecurity.facebook.appId='607277269325617'
+grails.plugin.springsecurity.facebook.secret=System.getenv('RUMMY_GAME_FACEBOOK_SECRET')
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 

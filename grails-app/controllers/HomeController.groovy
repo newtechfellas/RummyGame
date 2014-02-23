@@ -10,7 +10,7 @@ import com.webi.games.rummy.game.NotificationVO
 import com.webi.games.rummy.game.Player
 import com.webi.rummy.game.service.EmailService
 import com.webi.rummy.game.service.RummyGameService
-import grails.plugins.springsecurity.SpringSecurityService
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.validation.Validateable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate

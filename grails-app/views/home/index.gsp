@@ -339,7 +339,7 @@ a:hover {
                     }
                 });
                 client.subscribe("/topic/general", function(message) {
-                    var json = JSON.parse(JSON.parse(message.body)); //Not sure why double parsing is required. This is done to eleminate the double quotes in message body
+                    var json = JSON.parse(JSON.parse(message.body)); //Not sure why double parsing is required. This is done to eliminate the double quotes in message body
                     for (var i=0 ; i < json.messages.length;i++)
                     {
                         var message = json.messages[i]
@@ -396,225 +396,138 @@ a:hover {
 
 <div class="container">
 
-<div class="section">
-    <h1>Welcome, ${session.userName} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
-</div>
-
-<div class="pageAllWrap">
-<g:hasErrors bean="${command}">
-    <div class="errors">
-        <g:renderErrors as="list" bean="${command}"/>
+    <div class="section">
+        <h1>Welcome, ${session.userName} <g:link class="btn btn-warning" uri="/logout">Log out</g:link></h1>
     </div>
-</g:hasErrors>
 
-<!-- Notifications section-->
-<section id="notifcations">
+    <div class="pageAllWrap">
+        <g:hasErrors bean="${command}">
+            <div class="errors">
+                <g:renderErrors as="list" bean="${command}"/>
+            </div>
+        </g:hasErrors>
+        <!-- Notifications section-->
+        <section id="notifcations" />
 
-</section>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="well">
+                    <!-- Start New Game Option -->
+                    <h4>Start New Game</h4>
+                    <g:form action="startNewGame">
+                        <section id="NewGameSection">
+                            <div id="emailIds">
+                                <fieldset class="form">
+                                    <g:textArea name="playerIds" title="Enter Player Mail Ids One Per Row"
+                                                placeholder="Enter Player EmailIds One Per Row" cols="70"
+                                                rows="5"></g:textArea>
+                                    <br/>
+                                    <br>
+                                    Game Name <g:textField name="gameName"></g:textField>
+                                </fieldset>
+                            </div>
+                            <g:submitButton value="Create New Game And Send Invite" name="Create New Game And Send Invite"/>
+                        </section>
+                    </g:form>
+                </div>
+            </div>
+            <!-- Existing Games open  -->
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="well">
-            <!-- Start New Game Option -->
-            <h4>Start New Game</h4>
-            <g:form action="startNewGame">
-                <section id="NewGameSection">
-                    <div id="emailIds">
-                        <fieldset class="form">
-                            <g:textArea name="playerIds" title="Enter Player Mail Ids One Per Row"
-                                        placeholder="Enter Player EmailIds One Per Row" cols="70"
-                                        rows="5"></g:textArea>
-                            <br/>
-                            <br>
-                            Game Name <g:textField name="gameName"></g:textField>
-                        </fieldset>
+            <div class="col-md-6">
+                <g:if test="${gamesStartedByMe}">
+                    <div class="well">
+                        <h4>Games I Started</h4>
+                        <div class="headerInnerWrap">
+                            <g:each in="${gamesStartedByMe}">
+                            <nav class="mainNav cf">
+                            <span style="display: none" id="gameStartedByMe_${it.id}">${it.id}</span>
+                                <ul class="ml1">
+                                    <g:render template="/home/gameDetailsTemplate" model="[rummyGame:it]"></g:render>
+                                </ul>
+                            </nav>
+                            </g:each>
+                            <a style="float: right" title="Delete Game" href="javascript:alert('Idea is to implement drag and drop into this trash bin');">
+                                <img alt="Delete Game"
+                                     src="<g:createLinkTo file="images/24_empty_trash.jpg"/>">
+                            </a>
+                        </div>
                     </div>
-                    <g:submitButton value="Create New Game And Send Invite" name="Create New Game And Send Invite"/>
-                </section>
-            </g:form>
-        </div>
-    </div>
-    <!-- Existing Games open  -->
+                </g:if>
+                <g:if test="${openInvitations}">
+                    <div class="well">
+                        <h4>Open Invitations</h4>
+                        <div class="headerInnerWrap" id="openInvitations">
+                        <g:each in="${openInvitations}">
+                            <nav  class="mainNav cf" id="openInvitations_${it.id}">
+                                <ul class="ml1">
+                                    <g:render template="/home/gameDetailsTemplate" model="[rummyGame:it]"></g:render>
+                                    <section style="float: right">
+                                        <p class="field switch" >
+                                            <input type="radio" style="display:none" id="newGameResponse_${it.id}_1"
+                                                   name="newGameResponse"/>
+                                            <input type="radio" style="display:none" id="newGameResponse_${it.id}_2"
+                                                   name="newGameResponse"/>
+                                            <label for="newGameResponse_${it.id}_1" gameName="${it.gameName}" gameId="${it.id}"
+                                                   class="cb-enable"><span>Accept</span></label>
+                                            <label for="newGameResponse_${it.id}_2" gameName="${it.gameName}" gameId="${it.id}"
+                                                   class="cb-disable"><span>Reject</span></label>
+                                        </p>
+                                    </section>
+                                </ul>
+                            </nav>
+                        </g:each>
+                        </div>
+                    </div>
+                </g:if>
 
-    <div class="col-md-6">
-        <g:if test="${gamesStartedByMe}">
-            <div class="well">
-                <h4>Games I Started</h4>
-                <div class="headerInnerWrap">
-                    <g:each in="${gamesStartedByMe}">
-                    <nav class="mainNav cf">
-                    <span style="display: none" id="gameStartedByMe_${it.id}">${it.id}</span>
-                        <ul class="ml1">
-                            <li class="ml1li">
-                                <a href="#" class="ml1a">${it.gameName}<span class="arrow"></span></a>
-                                <div class="navMainOverlay cf">
-                                    <ul class="ml2">
-                                        <li>
-                                            <ul class="ml3">
-                                                <li>Started By:${it.originatorPlayerID} on ${it.creationTime}</li>
-                                                <g:if test="${it.lastUpdatedTime}">
-                                                    <li>Last Updated:${it.lastUpdatedTime}</li>
-                                                </g:if>
-                                                <g:if test="${it.isActive}">
-                                                    <li>Game is active at present</li>
-                                                </g:if>
-                                                <g:if test="${it.isCompleted}">
-                                                    <li>Game is completed</li>
-                                                </g:if>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);">Players</a>
-                                            <ul class="ml3">
-                                                <g:each in="${it.associatedPlayers}" var="associatedPlayer">
-                                                    <li>${associatedPlayer.playerId}</li>
-                                                </g:each>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
-                    </g:each>
-                    <a style="float: right" title="Delete Game" href="javascript:alert('Idea is to implement drag and drop into this trash bin');">
-                        <img alt="Delete Game"
-                             src="<g:createLinkTo file="images/24_empty_trash.jpg"/>">
-                    </a>
-                </div>
-            </div>
-        </g:if>
-        <g:if test="${openInvitations}">
-            <div class="well">
-                <h4>Open Invitations</h4>
-                <div class="headerInnerWrap" id="openInvitations">
-                <g:each in="${openInvitations}">
-                    <nav  class="mainNav cf" id="openInvitations_${it.id}">
-                        <ul class="ml1">
-                            <li class="ml1li">
-                                <a href="#" class="ml1a">${it.gameName}<span class="arrow"></span></a>
-                                <div class="navMainOverlay cf">
-                                    <ul class="ml2">
-                                        <li>
-                                            <ul class="ml3">
-                                                <li>Started By:${it.originatorPlayerID} on ${it.creationTime}</li>
-                                                <g:if test="${it.lastUpdatedTime}">
-                                                    <li>Last Updated:${it.lastUpdatedTime}</li>
-                                                </g:if>
-                                                <g:if test="${it.isActive}">
-                                                    <li>Game is active at present</li>
-                                                </g:if>
-                                                <g:if test="${it.isCompleted}">
-                                                    <li>Game is completed</li>
-                                                </g:if>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);">Players</a>
-                                            <ul class="ml3">
-                                                <g:each in="${it.associatedPlayers}" var="associatedPlayer">
-                                                    <li>${associatedPlayer.playerId}</li>
-                                                </g:each>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <section style="float: right">
-                                <p class="field switch" >
-                                    <input type="radio" style="display:none" id="newGameResponse_${it.id}_1"
-                                           name="newGameResponse"/>
-                                    <input type="radio" style="display:none" id="newGameResponse_${it.id}_2"
-                                           name="newGameResponse"/>
-                                    <label for="newGameResponse_${it.id}_1" gameName="${it.gameName}" gameId="${it.id}"
-                                           class="cb-enable"><span>Accept</span></label>
-                                    <label for="newGameResponse_${it.id}_2" gameName="${it.gameName}" gameId="${it.id}"
-                                           class="cb-disable"><span>Reject</span></label>
-                                </p>
-                            </section>
-                        </ul>
-                    </nav>
-                </g:each>
-                </div>
-            </div>
-        </g:if>
-
-        <div class="well" id="participatedGamesHolder" <g:if test="${!participatedGames}">style="display: none"</g:if>>
-            <h4>Games Participated</h4>
-                <header style="padding-bottom: 3em">
-                    <h4 style="float:left">Game Name</h4>
-                    <h4 style="float:right">Game Result</h4>
-                </header>
-                <div class="headerInnerWrap" id="participatedGames">
-                <g:if test="${participatedGames}">
-                <g:each in="${participatedGames}">
-                    <nav  class="mainNav cf">
-                        <ul class="ml1">
-                            <li class="ml1li">
-                                <a href="#" class="ml1a">${it.gameName}<span class="arrow"></span></a>
-                                <div class="navMainOverlay cf">
-                                    <ul class="ml2">
-                                        <li>
-                                            <ul class="ml3">
-                                                <li>Started By:${it.originatorPlayerID} on ${it.creationTime}</li>
-                                                <g:if test="${it.lastUpdatedTime}">
-                                                    <li>Last Updated:${it.lastUpdatedTime}</li>
-                                                </g:if>
-                                                <g:if test="${it.isActive}">
-                                                    <li>Game is active at present</li>
-                                                </g:if>
-                                                <g:if test="${it.isCompleted}">
-                                                    <li>Game is completed</li>
-                                                </g:if>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);">Players</a>
-                                            <ul class="ml3">
-                                                <g:each in="${it.associatedPlayers}" var="associatedPlayer">
-                                                    <li>${associatedPlayer.playerId}</li>
-                                                </g:each>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <h4 style="float: right">NOT AVAILABLE</h4>
-                        </ul>
-                    </nav>
-                    </g:each>
-                    </g:if>
-                </div>
-
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="well">
-            <h4>Friends List</h4>
-            <table class="table table-striped">
-                <tbody>
-                <g:each in="${currentPlayerFriends}" var="player">
-                    <tr>
-                        <td class="chat_player_id">
-                            ${player.emailId}
-                        </td>
-                        <td>
-                            <g:if test="${player.isLoggedInNow}">
-                                ACTIVE
+                <div class="well" id="participatedGamesHolder" <g:if test="${!participatedGames}">style="display: none"</g:if>>
+                    <h4>Games Participated</h4>
+                        <header style="padding-bottom: 3em">
+                            <h4 style="float:left">Game Name</h4>
+                            <h4 style="float:right">Game Result</h4>
+                        </header>
+                        <div class="headerInnerWrap" id="participatedGames">
+                        <g:if test="${participatedGames}">
+                        <g:each in="${participatedGames}">
+                            <nav  class="mainNav cf">
+                                <ul class="ml1">
+                                    <g:render template="/home/gameDetailsTemplate" model="[rummyGame:it]"></g:render>
+                                    <h4 style="float: right">NOT AVAILABLE</h4>
+                                </ul>
+                            </nav>
+                            </g:each>
                             </g:if>
-                            <g:else>
-                                INACTIVE
-                            </g:else>
-                        </td>
-                    </tr>
-                </g:each>
-                </tbody>
-            </table>
+                        </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="well">
+                    <h4>Friends List</h4>
+                    <table class="table table-striped">
+                        <tbody>
+                        <g:each in="${currentPlayerFriends}" var="player">
+                            <tr>
+                                <td class="chat_player_id">
+                                    ${player.emailId}
+                                </td>
+                                <td>
+                                    <g:if test="${player.isLoggedInNow}">
+                                        ACTIVE
+                                    </g:if>
+                                    <g:else>
+                                        INACTIVE
+                                    </g:else>
+                                </td>
+                            </tr>
+                        </g:each>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </div><!-- /.container -->
 <script>
     $(document).ready(function () {
