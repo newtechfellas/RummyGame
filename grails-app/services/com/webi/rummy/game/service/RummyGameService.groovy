@@ -29,6 +29,7 @@ class RummyGameService {
         session.clear()
     }
 
+    @Transactional(readOnly = true)
     List<String> getAllInvitedPlayerIDsFor(String playerID) {
         def results = RummyGameAssociatedPlayer.withCriteria {
             projections { property('playerId') }
@@ -42,12 +43,23 @@ class RummyGameService {
         return results
     }
 
+    RummyGame beginGame(long gameId, String requestingPlayerId) {
+        //check if the input game is started by current logged on player.
+        RummyGame game = RummyGame.findByIdAndOriginatorPlayerIDAndIsActive(gameId, requestingPlayerId, false)
+        if (game) {
+            game.isActive = true
+            game.save()
+        }
+        return game
+    }
+
     //
     //returns the friend playerIDs of input playerId
     //friend player = All such players who received invitation from input player
     //                             +
     //                All such player who sent invitation to input player
     //
+    @Transactional(readOnly = true)
     List<String> getAllPlayerIDsKnownTo(String playerId) {
         Friends.findAllByPlayerIdOrFriendPlayerId(playerId, playerId)?.collect {
             Friends friends ->
@@ -55,7 +67,7 @@ class RummyGameService {
         }?.sort().unique()
     }
 
-
+    @Transactional(readOnly = true)
     RummyGame getGameDetails(long id, String userName) {
         RummyGame game
         def results = RummyGame.withCriteria { //game started by the player?

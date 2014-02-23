@@ -33,7 +33,7 @@ class HomeController {
             brokerMessagingTemplate.convertAndSend "/topic/loggedIn", userName
             session['userName'] = userName
         }
-        render view: 'index', model: getHomePageModel()
+        render view: 'home', model: getHomePageModel()
     }
 
     def startNewGame = {
@@ -47,10 +47,22 @@ class HomeController {
             //refresh the home page
             Map model = getHomePageModel()
             model.put('command', command)
-            render view: 'index', model: model
+            render view: 'home', model: model
     }
 
-    Map getHomePageModel() {
+    def beginGame (long gameId)  {
+        String loggedInPlayer = session['userName']
+        RummyGame game = rummyGameService.beginGame(gameId, loggedInPlayer)
+        if ( game ) {
+            flash.message = "Could not begin game. Either the game is already active or game is not started by you"
+        }
+        //re-render the home page to reflect the active games
+        redirect(action: 'index')
+
+    }
+    //fetches all open games, invited games, active games, friends playerIDs details.
+    //Pretty much all the data that is needed for home page
+    private Map getHomePageModel() {
         String loggedInUser = session['userName']
         // fetch all the invited players across all games for currently logged in player. Required to display
         // active status of all friends to initiate chat with. Like facebook/google chat
@@ -62,21 +74,25 @@ class HomeController {
         if (gamesStartedByPlayer) {
             modelMap.put('gamesStartedByMe', gamesStartedByPlayer)
         }
+        List<RummyGame> activeGames = (gamesStartedByPlayer?.findAll { it.isActive })?:[]
         List<RummyGameAssociatedPlayer> associatedGames = RummyGameAssociatedPlayer.findAllByPlayerId(loggedInUser)
         if (associatedGames) {
-            List gamesReceivedInvitation = associatedGames.findAll {
+            List<RummyGame> gamesReceivedInvitation = associatedGames.findAll {
                 it.gameAcceptStatus == GameAcceptStatus.NO_RESPONSE
             }.collect { it.game }
             if (gamesReceivedInvitation) {
                 modelMap.put('openInvitations', gamesReceivedInvitation)
+                gamesReceivedInvitation.each { it.isActive && activeGames << it }
             }
-            List gamesParticipated = associatedGames.findAll {
+            List<RummyGame> gamesParticipated = associatedGames.findAll {
                 it.gameAcceptStatus != GameAcceptStatus.NO_RESPONSE
             }.collect { it.game }
             if (gamesParticipated) {
                 modelMap.put('participatedGames', gamesParticipated)
+                gamesParticipated.each { it.isActive && activeGames << it }
             }
         }
+        modelMap.put( 'activeGames', activeGames )
         return modelMap
     }
 

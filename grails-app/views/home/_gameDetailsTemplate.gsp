@@ -28,6 +28,7 @@
                     </g:each>
                 </ul>
             </li>
+
         </ul>
     </div>
 </li>

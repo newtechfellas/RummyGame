@@ -317,7 +317,9 @@ a:hover {
 </style>
 <!-- Combo-handled YUI JS files: -->
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<r:require modules="jquery, spring-websocket"/>
+
+
+<r:require modules="spring-websocket"/>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <r:script>
             var socket = new SockJS("${createLink(uri: '/stomp')}");
@@ -443,7 +445,15 @@ a:hover {
                             <span style="display: none" id="gameStartedByMe_${it.id}">${it.id}</span>
                                 <ul class="ml1">
                                     <g:render template="/home/gameDetailsTemplate" model="[rummyGame:it]"></g:render>
+                                %{-- If current player started the game, provide the option to the player to begin game if its not already begun--}%
+                                    <g:if test="${!it.isActive && it.originatorPlayerID == session['userName']}">
+                                        <g:form>
+                                            <g:textField name="gameId" hidden="hidden" value="${it.id}" />
+                                            <g:actionSubmit value="BeginGame" action="beginGame"></g:actionSubmit>
+                                        </g:form>
+                                    </g:if>
                                 </ul>
+
                             </nav>
                             </g:each>
                             <a style="float: right" title="Delete Game" href="javascript:alert('Idea is to implement drag and drop into this trash bin');">
@@ -527,9 +537,34 @@ a:hover {
                 </div>
             </div>
         </div>
+        <g:if test="${activeGames}">
+        <div class="ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible" id="games">
+            <ul role="tablist" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+            <g:each in="${activeGames}" var="activeGame" status="index">
+                <li aria-selected="false" aria-labelledby="ui-id-${index}" aria-controls="tabs-${index}" tabindex="-1" role="tab" class="ui-state-default ui-corner-top">
+                    <a id="ui-id-${index}" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#game-${activeGame.id}">${activeGame.gameName}</a></li>
+            </g:each>
+            </ul>
+            <g:each in="${activeGames}" var="activeGame" status="index">
+            <div style="display: none;" aria-hidden="true" aria-expanded="false" role="tabpanel" class="ui-tabs-panel ui-widget-content ui-corner-bottom" aria-labelledby="ui-id-${index}" id="game-${activeGame.id}">
+                <p><strong>Click this tab again to close the content pane.</strong></p>
+            </div>
+            </g:each>
+        </div>
+        </g:if>
     </div>
 </div><!-- /.container -->
 <script>
+    function beginGame(gameId) {
+        dbg('gameId ='+gameId+ " has begun");
+        $.ajax({
+            type: 'POST',
+            url:'<g:createLink controller="home" action="beginGame"></g:createLink>',
+            data: { gameId : gameId }
+        }).done(function(data) {
+            dbg(gameId+' successfully begun. data='+data);
+        });
+    }
     $(document).ready(function () {
         $('.ml1a').each(function (i) {
             $(this).attr('id', 'ml1aButton-' + (i + 1));
@@ -577,6 +612,10 @@ a:hover {
         $('.ml1li:first-child a').focus(function () {
             $('.navMainOverlay').hide();
             $('.ml1li').next().removeClass('ml1liHover');
+        });
+
+        $( "#games" ).tabs({
+            collapsible: true
         });
     });
 </script>
