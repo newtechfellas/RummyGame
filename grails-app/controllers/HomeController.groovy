@@ -93,6 +93,7 @@ class HomeController {
             }
         }
         modelMap.put( 'activeGames', activeGames )
+        //for each active game without hand position determined, create a deck of cards to display on screen
         return modelMap
     }
 

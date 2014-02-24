@@ -53,11 +53,11 @@
 </div>
 
 <div class="container">
-
     <g:layoutBody/>
     <r:layoutResources/>
-
 </div><!-- /.container -->
+<footer>
 
+</footer>
 </body>
 </html>

@@ -45,10 +45,10 @@ class RummyGameService {
 
     RummyGame beginGame(long gameId, String requestingPlayerId) {
         //check if the input game is started by current logged on player.
-        RummyGame game = RummyGame.findByIdAndOriginatorPlayerIDAndIsActive(gameId, requestingPlayerId, false)
-        if (game) {
-            game.isActive = true
-            game.save()
+        RummyGame game = RummyGame.findByIdAndOriginatorPlayerIDAndIsActive(gameId, requestingPlayerId, false)?.with {
+            isActive = true
+            lastUpdatedTime = new Date()
+            save()
         }
         return game
     }
